@@ -35,7 +35,6 @@ class _ExercisePageState extends State<ExercisePage> {
   ];
 
   void removeExercise(int index) {
-    print("yeyo");
     setState(() {
       exerciseList.removeAt(index);
     });
