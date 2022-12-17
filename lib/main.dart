@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:web_app/screens/exerciseScreen.dart';
+import 'package:web_app/screens/programScreen.dart';
+import 'package:web_app/screens/userScreen.dart';
+import 'package:web_app/widgets/appBar.dart';
 
 void main() {
   runApp(MyApp());
@@ -13,6 +17,11 @@ class MyApp extends StatelessWidget {
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: HomePage(),
+      routes: {
+        ExercisePage.routeName: (context) => const ExercisePage(),
+        Programs.routeName: (context) => const Programs(),
+        User.routeName: (context) => const User(),
+      },
     );
   }
 }
@@ -31,64 +40,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
         appBar: PreferredSize(
           preferredSize: Size(screenSize.width, 1000),
-          child: Container(
-            color: Color(0xFF88AB75),
-            child: Padding(
-              padding: EdgeInsets.all(20),
-              child: Row(
-                children: [
-                  //logo will be added
-                  Expanded(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                    ),
-                  ),
-                  SizedBox(width: screenSize.width / 50),
-                  InkWell(
-                    onTap: () {},
-                    child: Text(
-                      'Exercises',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                  SizedBox(width: screenSize.width / 50),
-                  InkWell(
-                    onTap: () {},
-                    child: Text(
-                      'Programs',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                  SizedBox(width: screenSize.width / 50),
-                  InkWell(
-                    onTap: () {},
-                    child: Text(
-                      'Users',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                  SizedBox(width: screenSize.width / 50),
-                  InkWell(
-                    onTap: () {},
-                    child: Text(
-                      'Profile',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                  SizedBox(
-                    width: screenSize.width / 50,
-                  ),
-                  InkWell(
-                    onTap: () {},
-                    child: Text(
-                      'Log Out',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
+          child: const CustomAppBarContent(),
         ),
         body: SingleChildScrollView(
             child: SizedBox(
