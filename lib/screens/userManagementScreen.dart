@@ -1,18 +1,14 @@
-import 'package:http/http.dart';
-
 import 'package:flutter/material.dart';
 import 'package:web_app/screens/mainScreen.dart';
 
-class LoginScreen extends StatelessWidget {
-  static const routeName = "/login";
-  const LoginScreen();
+class UserScreen extends StatelessWidget {
+  static const routeName = "/user_management";
+  const UserScreen();
 
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context).size;
     List _isHovering = [false, false, false, false];
-
-    
 
     return Scaffold(
       appBar: PreferredSize(
@@ -81,48 +77,71 @@ class LoginScreen extends StatelessWidget {
 
       body: SingleChildScrollView(child:SizedBox(
         width: screenSize.width, height: screenSize.height,
-        child:Row(children: [
-          Flexible(
-            flex: 1,
-            child: Container(
-              width: screenSize.width*0.6, height: screenSize.height,
-            )),
-          Flexible(
-            flex: 2,
-            fit: FlexFit.loose,
-            child: 
-              Row(
-                children: [
-                Container(
-                  height: 185,
-                  width: 359,
-                  alignment: Alignment.center,
-                    child:
-                      Text(
-                        "Hello,\n\nWelcome to Inertia's\nWeb Management\nService",
-                        textAlign: TextAlign.left,
-                        style: TextStyle(color: Colors.black, fontSize: 30),
-                      )
+        child: Container(
+          color: Colors.white,
+          child: Padding(
+            padding: EdgeInsets.all(70),
+            child: Column(
+              children: [
+                Center(
+                  child: InkWell(
+                    child: Text(
+                      "Today’s Accomplishments:",
+                      style: TextStyle(fontSize: 50 ,color: Colors.black),
+                    ),
                   ),
-                Container(
-                  alignment: Alignment.center,
-                  height: 44,
-                  width: 359,
-                  color: Color(0xFFDBD56E)),
-                Container(
-                  alignment: Alignment.center,
-                  height: 44,
-                  width: 359,
-                  color: Color(0xFFDBD56E),),
+                ),
+                SizedBox(
+                  height: 70,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: <Widget>[
+                    Container(
+                      alignment: Alignment.bottomLeft,
+                      width: 592,
+                      height: 450,
+                      decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10), color: Color(0xFFDBD56E)),
+                      child: const Padding(
+                      padding: EdgeInsets.all(20),
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: Text(
+                        "3,400 \nUsers",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Colors.black, fontSize: 100),
+                      ),
+                      ),
+                      ),
+                    ),
+                    Container(
+                      alignment: Alignment.centerRight,
+                      width: 592,
+                      height: 450,
+                      decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10), color: Color(0xFFDBD56E)),
+                      child: const Padding(
+                      padding: EdgeInsets.all(20),
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: Text(
+                        "2,500\nExercises",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Colors.black, fontSize: 100),
+                      ),
+                      ),
+                      ),
+                    )
+
                   ],
                 ),
-                ),
-                
-              
-            ],
+              ],
             ),
-            ),
-      ),
+            
+          ),
+        ),  
+      ))
 
 
       

@@ -1,0 +1,19 @@
+import 'dart:collection';
+
+import 'package:flutter/material.dart';
+
+class AuthProvider extends ChangeNotifier {
+  final Map<dynamic, dynamic> _userInfo = {
+    "uid": "userid1",
+    "mail": "user@example.com",
+    "phone_number": "+90 555 555 55 55",
+    "full_name": "John Doe",
+    "username": "johndoe445",
+    "gender": "male",
+    "birthdate": DateTime.utc(1989, 11, 9),
+    "profilePictureUrl":
+        "https://cdna.artstation.com/p/assets/images/images/045/827/404/large/omar-osmanovic-bateman.jpg?1643645562",
+  };
+
+  UnmodifiableMapView get userInfo => UnmodifiableMapView(_userInfo);
+}
