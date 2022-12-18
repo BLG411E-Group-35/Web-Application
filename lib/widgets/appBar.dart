@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:web_app/screens/exerciseScreen.dart';
+import 'package:web_app/screens/loginScreen.dart';
 import 'package:web_app/screens/programScreen.dart';
 import 'package:web_app/screens/userScreen.dart';
 
@@ -10,7 +11,7 @@ class CustomAppBarContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
     return Container(
-      color: Color(0xFF88AB75),
+      color: Theme.of(context).primaryColor,
       child: Padding(
         padding: EdgeInsets.all(20),
         child: Row(
@@ -63,7 +64,10 @@ class CustomAppBarContent extends StatelessWidget {
               width: screenSize.width / 50,
             ),
             InkWell(
-              onTap: () {},
+              onTap: () {
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                    LoginScreen.routeName, (route) => false);
+              },
               child: Text(
                 'Log Out',
                 style: TextStyle(color: Colors.white),
