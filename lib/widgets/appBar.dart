@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:web_app/providers/AuthProvider.dart';
 import 'package:web_app/screens/exerciseScreen.dart';
 import 'package:web_app/screens/loginScreen.dart';
 import 'package:web_app/screens/programScreen.dart';
@@ -52,21 +54,24 @@ class CustomAppBarContent extends StatelessWidget {
                 style: TextStyle(color: Colors.white),
               ),
             ),
-            SizedBox(width: screenSize.width / 50),
-            InkWell(
-              onTap: () {},
-              child: Text(
-                'Profile',
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
+            // SizedBox(width: screenSize.width / 50),
+            // InkWell(
+            //   onTap: () {},
+            //   child: Text(
+            //     'Profile',
+            //     style: TextStyle(color: Colors.white),
+            //   ),
+            // ),
             SizedBox(
               width: screenSize.width / 50,
             ),
             InkWell(
               onTap: () {
+                Provider.of<AuthProvider>(context, listen: false).logOut();
                 Navigator.of(context).pushNamedAndRemoveUntil(
-                    LoginScreen.routeName, (route) => false);
+                  '/',
+                  (route) => false,
+                );
               },
               child: Text(
                 'Log Out',
