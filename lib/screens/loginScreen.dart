@@ -186,20 +186,22 @@ class _LoginScreenState extends State<LoginScreen> {
                                 const SizedBox(
                                   height: 20,
                                 ),
-                                ElevatedButton(
-                                  onPressed: _submit,
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor:
-                                        Theme.of(context).primaryColor,
-                                    padding: const EdgeInsets.all(15.0),
-                                  ),
-                                  child: const Text(
-                                    "Login",
-                                    style: TextStyle(
-                                      fontSize: 24,
-                                    ),
-                                  ),
-                                ),
+                                _isLoading
+                                    ? const CircularProgressIndicator()
+                                    : ElevatedButton(
+                                        onPressed: _submit,
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor:
+                                              Theme.of(context).primaryColor,
+                                          padding: const EdgeInsets.all(15.0),
+                                        ),
+                                        child: const Text(
+                                          "Login",
+                                          style: TextStyle(
+                                            fontSize: 24,
+                                          ),
+                                        ),
+                                      ),
                               ],
                             ),
                           ),
