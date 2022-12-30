@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:web_app/models/http_exception.dart';
 import 'package:web_app/providers/WorkoutProvider.dart';
 import 'package:web_app/widgets/appBar.dart';
 import 'package:web_app/widgets/buttons.dart';
+import 'package:flutter/services.dart';
 
 import '../themes/customTheme.dart';
 
@@ -16,20 +18,26 @@ class Programs extends StatefulWidget {
 
 class _ProgramsState extends State<Programs> {
   bool _isInit = false;
-  bool _isLoading = false;
+  bool isLoading = false;
 
   @override
   void didChangeDependencies() {
     if (!_isInit) {
       setState(() {
-        _isLoading = true;
+        isLoading = true;
       });
-      Provider.of<WorkoutProvider>(context).fetchWorkouts().then((_) {
-        setState(() {
-          _isLoading = false;
-        });
-      });
+      Provider.of<WorkoutProvider>(context)
+          .fetchWorkouts()
+          .then((_) {})
+          .catchError(
+        (error) {
+          print(error);
+        },
+      );
       _isInit = true;
+      setState(() {
+        isLoading = false;
+      });
     }
     super.didChangeDependencies();
   }
@@ -44,6 +52,330 @@ class _ProgramsState extends State<Programs> {
     }
   }
 
+  void showSnackbar(String msg, {bool error = true}) {
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(
+      SnackBar(
+        content: Text(msg),
+        backgroundColor: error
+            ? Theme.of(context).colorScheme.error
+            : Theme.of(context).primaryColor,
+      ),
+    );
+  }
+
+  void showCreationPopUpMenu({oldData}) {
+    Provider.of<WorkoutProvider>(context, listen: false)
+        .fetchMoves()
+        .then((moves) => showDialog(
+              context: context,
+              builder: (ctx) {
+                Map<String, dynamic> workoutData = {};
+                Map<dynamic, bool> moveSelected = {};
+                Map<dynamic, int?> moveSets = {};
+                Map<dynamic, int?> moveReps = {};
+                final GlobalKey<FormState> formKey = GlobalKey();
+                bool isLoading = false;
+
+                workoutData = {
+                  "workoutName": oldData != null ? oldData["workoutName"] : "",
+                  "workoutDescription":
+                      oldData != null ? oldData["workoutDescription"] : "",
+                  "workoutDuration": oldData != null
+                      ? oldData["workoutDuration"].toString()
+                      : "",
+                  "workoutDifficulty":
+                      oldData != null ? oldData["workoutDifficulty"] : "",
+                };
+
+                moves.forEach((key, value) {
+                  moveSelected[key] = false;
+                  moveSets[key] = null;
+                  moveReps[key] = null;
+                });
+
+                if (oldData != null) {
+                  oldData["moves"].forEach((m) {
+                    moveSelected[m["workoutMoveName"]] = true;
+                    moveSets[m["workoutMoveName"]] = m["sets"];
+                    moveReps[m["workoutMoveName"]] = m["repeats"];
+                  });
+                }
+
+                return AlertDialog(
+                    title: const Text("Add new workout."),
+                    content: StatefulBuilder(builder: ((context, setState) {
+                      Future<void> submit() async {
+                        if (formKey.currentState == null ||
+                            !formKey.currentState!.validate()) {
+                          // Invalid!
+                          return;
+                        }
+
+                        // print("I have passed the validator");
+
+                        formKey.currentState!.save();
+
+                        // print("I have passed the save");
+
+                        workoutData["moveCount"] = 0;
+                        workoutData["moves"] = [];
+
+                        moveSelected.forEach((key, value) {
+                          if (value) {
+                            workoutData["moves"].add({
+                              "moveId": moves[key].toString(),
+                              "order":
+                                  (workoutData["moveCount"] + 1).toString(),
+                              "sets": moveSets[key].toString(),
+                              "repeats": moveReps[key].toString(),
+                            });
+
+                            workoutData["moveCount"] += 1;
+                          }
+                        });
+                        workoutData["moveCount"] =
+                            workoutData["moveCount"].toString();
+                        setState(() {
+                          isLoading = true;
+                        });
+
+                        try {
+                          if (oldData == null) {
+                            await Provider.of<WorkoutProvider>(
+                              context,
+                              listen: false,
+                            ).createWorkout(workoutData);
+                            showSnackbar(
+                              "Successfully added!",
+                              error: false,
+                            );
+                          } else {
+                            await Provider.of<WorkoutProvider>(
+                              context,
+                              listen: false,
+                            ).updateWorkout(
+                                oldData["workoutId"].toString(), workoutData);
+                            showSnackbar(
+                              "Successfully updated!",
+                              error: false,
+                            );
+                          }
+                          Navigator.of(context).pop();
+                        } on HttpException catch (error) {
+                          showSnackbar(error.toString());
+                        }
+                        setState(() {
+                          isLoading = false;
+                        });
+                      }
+
+                      return Form(
+                          key: formKey,
+                          child: SingleChildScrollView(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                TextFormField(
+                                  initialValue: workoutData["workoutName"],
+                                  decoration: const InputDecoration(
+                                    labelText: 'Workout Name',
+                                    floatingLabelBehavior:
+                                        FloatingLabelBehavior.never,
+                                  ),
+                                  validator: (String? value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Invalid name!';
+                                    }
+                                    return null;
+                                  },
+                                  onSaved: (value) {
+                                    workoutData["workoutName"] = value;
+                                  },
+                                ),
+                                TextFormField(
+                                  initialValue:
+                                      workoutData["workoutDescription"],
+                                  decoration: const InputDecoration(
+                                    labelText: 'Workout Description',
+                                    floatingLabelBehavior:
+                                        FloatingLabelBehavior.never,
+                                  ),
+                                  validator: (String? value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Invalid name!';
+                                    }
+                                    return null;
+                                  },
+                                  onSaved: (value) {
+                                    workoutData["workoutDescription"] = value;
+                                  },
+                                ),
+                                TextFormField(
+                                  initialValue: workoutData["workoutDuration"],
+                                  decoration: const InputDecoration(
+                                    labelText: 'Workout Duration',
+                                    floatingLabelBehavior:
+                                        FloatingLabelBehavior.never,
+                                  ),
+                                  keyboardType: TextInputType.number,
+                                  validator: (String? value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Invalid name!';
+                                    }
+                                    return null;
+                                  },
+                                  onSaved: (value) {
+                                    workoutData["workoutDuration"] = value;
+                                  },
+                                ),
+                                TextFormField(
+                                  initialValue:
+                                      workoutData["workoutDifficulty"],
+                                  decoration: const InputDecoration(
+                                    labelText: 'Workout Difficulty',
+                                    floatingLabelBehavior:
+                                        FloatingLabelBehavior.never,
+                                  ),
+                                  validator: (String? value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Invalid name!';
+                                    }
+                                    value = value.toLowerCase();
+                                    if (value != "hard" &&
+                                        value != "medium" &&
+                                        value != "easy") {
+                                      return "Difficulty must be one of the following: hard, medium, easy";
+                                    }
+                                    return null;
+                                  },
+                                  onSaved: (value) {
+                                    workoutData["workoutDifficulty"] = value;
+                                  },
+                                ),
+                                ...moves.keys.map((e) => SizedBox(
+                                      width: 400,
+                                      child: Row(
+                                        children: [
+                                          Expanded(
+                                            child: CheckboxListTile(
+                                              title: Text(e),
+                                              value: moveSelected[e],
+                                              onChanged: (value) {
+                                                setState(() {
+                                                  moveSelected[e] =
+                                                      value ?? false;
+                                                });
+                                              },
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: 100,
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(10.0),
+                                              child: TextFormField(
+                                                initialValue: moveSets[e] ==
+                                                        null
+                                                    ? ""
+                                                    : moveSets[e].toString(),
+                                                enabled: moveSelected[e],
+                                                decoration:
+                                                    const InputDecoration(
+                                                  labelText: 'Sets',
+                                                  floatingLabelBehavior:
+                                                      FloatingLabelBehavior
+                                                          .never,
+                                                ),
+                                                inputFormatters: [
+                                                  FilteringTextInputFormatter
+                                                      .digitsOnly
+                                                ],
+                                                keyboardType:
+                                                    TextInputType.number,
+                                                validator: (String? value) {
+                                                  if (moveSelected[e]!) {
+                                                    if (value == null ||
+                                                        value.isEmpty) {
+                                                      return 'Empty !';
+                                                    }
+                                                  }
+                                                  return null;
+                                                },
+                                                onSaved: (value) {
+                                                  moveSets[e] = value == null
+                                                      ? 0
+                                                      : int.parse(value);
+                                                },
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: 100,
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(10.0),
+                                              child: TextFormField(
+                                                initialValue: moveReps[e] ==
+                                                        null
+                                                    ? ""
+                                                    : moveReps[e].toString(),
+                                                enabled: moveSelected[e],
+                                                decoration:
+                                                    const InputDecoration(
+                                                  labelText: 'Repeats',
+                                                  floatingLabelBehavior:
+                                                      FloatingLabelBehavior
+                                                          .never,
+                                                ),
+                                                inputFormatters: [
+                                                  FilteringTextInputFormatter
+                                                      .digitsOnly
+                                                ],
+                                                keyboardType:
+                                                    TextInputType.number,
+                                                validator: (String? value) {
+                                                  if (moveSelected[e]!) {
+                                                    if (value == null ||
+                                                        value.isEmpty) {
+                                                      return 'Empty !';
+                                                    }
+                                                  }
+                                                  return null;
+                                                },
+                                                onSaved: (value) {
+                                                  moveReps[e] = value == null
+                                                      ? 0
+                                                      : int.parse(value);
+                                                },
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    )),
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                                isLoading
+                                    ? const CircularProgressIndicator()
+                                    : ElevatedButton(
+                                        onPressed: submit,
+                                        child: Text(
+                                          oldData == null ? "Create" : "Change",
+                                        ),
+                                      )
+                              ],
+                            ),
+                          ));
+                    })));
+              },
+            ))
+        .catchError((err) => showSnackbar(err.toString()));
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
@@ -53,7 +385,7 @@ class _ProgramsState extends State<Programs> {
         child: const CustomAppBarContent(),
       ),
       body: SingleChildScrollView(
-        child: _isLoading
+        child: isLoading
             ? const Center(
                 child: CircularProgressIndicator(),
               )
@@ -65,6 +397,7 @@ class _ProgramsState extends State<Programs> {
                       children: [
                         ...workouts.items.map(
                           (e) => SizedBox(
+                            key: ObjectKey(e["workoutId"]),
                             width: screenSize.width * 0.9,
                             child: Card(
                               elevation: 12,
@@ -77,6 +410,7 @@ class _ProgramsState extends State<Programs> {
                               child: Padding(
                                 padding: EdgeInsets.all(15),
                                 child: ExpansionTile(
+                                  textColor: Colors.white,
                                   title: Text(e["workoutName"]),
                                   subtitle: Text(e["workoutDescription"]),
                                   childrenPadding: const EdgeInsets.all(10),
@@ -150,7 +484,10 @@ class _ProgramsState extends State<Programs> {
                                           child: IconWithTextElevatedButton(
                                             text: "Edit",
                                             icon: Icons.edit,
-                                            callback: () => {},
+                                            callback: () {
+                                              return showCreationPopUpMenu(
+                                                  oldData: e);
+                                            },
                                           ),
                                         ),
                                         const SizedBox(
@@ -165,7 +502,8 @@ class _ProgramsState extends State<Programs> {
                                               showDialog(
                                                 context: context,
                                                 builder: (ctx) => AlertDialog(
-                                                  title: const Text("Error"),
+                                                  title: Text(
+                                                      "Remove ${e["workoutName"]}"),
                                                   content: const Text(
                                                       "Are you sure you want to delete this workout?"),
                                                   actions: [
@@ -177,22 +515,13 @@ class _ProgramsState extends State<Programs> {
                                                             e["workoutId"]
                                                                 .toString(),
                                                           );
-                                                        } catch (err) {
-                                                          print(err);
-                                                          ScaffoldMessenger.of(
-                                                            context,
-                                                          ).showSnackBar(
-                                                            SnackBar(
-                                                              content: Text(
-                                                                err.toString(),
-                                                              ),
-                                                              backgroundColor:
-                                                                  Theme.of(
-                                                                          context)
-                                                                      .colorScheme
-                                                                      .error,
-                                                            ),
+                                                          showSnackbar(
+                                                            "Successfully Removed",
+                                                            error: false,
                                                           );
+                                                        } catch (err) {
+                                                          showSnackbar(
+                                                              err.toString());
                                                         }
                                                         Navigator.of(ctx).pop();
                                                       },
@@ -224,15 +553,10 @@ class _ProgramsState extends State<Programs> {
                 ),
               ),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: showCreationPopUpMenu,
+        child: const Icon(Icons.add),
+      ),
     );
-  }
-}
-
-class moves extends StatelessWidget {
-  const moves({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container();
   }
 }

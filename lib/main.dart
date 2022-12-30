@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:web_app/providers/AuthProvider.dart';
+import 'package:web_app/providers/UserProvider.dart';
 import 'package:web_app/providers/WorkoutProvider.dart';
 import 'package:web_app/screens/exerciseScreen.dart';
 import 'package:web_app/screens/loginScreen.dart';
@@ -9,6 +10,8 @@ import 'package:web_app/screens/homeScreen.dart';
 import 'package:web_app/themes/customTheme.dart';
 import 'package:web_app/widgets/appBar.dart';
 import 'package:provider/provider.dart';
+
+import 'package:tflite/tflite.dart';
 
 void main() {
   runApp(MyApp());
@@ -25,6 +28,14 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProxyProvider<AuthProvider, WorkoutProvider>(
           create: (context) => WorkoutProvider(null, null, null),
           update: (ctx, auth, previous) => WorkoutProvider(
+            auth.token,
+            auth.userId,
+            previous == null ? [] : previous.items,
+          ),
+        ),
+        ChangeNotifierProxyProvider<AuthProvider, UserProvider>(
+          create: (context) => UserProvider(null, null, null),
+          update: (ctx, auth, previous) => UserProvider(
             auth.token,
             auth.userId,
             previous == null ? [] : previous.items,
