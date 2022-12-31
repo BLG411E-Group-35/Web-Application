@@ -2,6 +2,7 @@ import 'dart:collection';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 import 'package:http/http.dart' as http;
@@ -346,6 +347,37 @@ class WorkoutProvider extends ChangeNotifier {
     try {
       final response = await http.get(
         Uri.parse(url),
+        headers: {
+          "Authorization": _token!,
+        },
+      );
+
+      final responseData = json.decode(response.body);
+      if (response.statusCode >= 400) {
+        throw HttpException(responseData["message"]);
+      }
+
+      notifyListeners();
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  Future<void> addMove(List<Map<String, dynamic>> steps, String name) async {
+    Map<String, dynamic> body = {
+      "name": name,
+      "steps": steps,
+    };
+
+    print(body);
+
+    var url =
+        "https://684ezlnsfa.execute-api.eu-central-1.amazonaws.com/Prod/move/create";
+
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        body: json.encode(body),
         headers: {
           "Authorization": _token!,
         },

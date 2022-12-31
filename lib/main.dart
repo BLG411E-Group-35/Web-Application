@@ -11,8 +11,6 @@ import 'package:web_app/themes/customTheme.dart';
 import 'package:web_app/widgets/appBar.dart';
 import 'package:provider/provider.dart';
 
-import 'package:tflite/tflite.dart';
-
 void main() {
   runApp(MyApp());
 }
