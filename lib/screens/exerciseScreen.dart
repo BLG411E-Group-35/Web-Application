@@ -114,54 +114,6 @@ class _ExercisePageState extends State<ExercisePage> {
                                         exercise["workoutMoveName"],
                                         textScaleFactor: 1,
                                       ),
-                                      InkWell(
-                                        onTap: () {
-                                          showDialog(
-                                            context: context,
-                                            builder: (ctx) => AlertDialog(
-                                              title: Text(
-                                                  "Remove ${exercise['workoutMoveName']}"),
-                                              content: const Text(
-                                                  "Are you sure you want to delete this workout?"),
-                                              actions: [
-                                                TextButton(
-                                                  onPressed: () async {
-                                                    try {
-                                                      await workouts.removeMove(
-                                                        exercise[
-                                                                "workoutMoveId"]
-                                                            .toString(),
-                                                      );
-                                                      setState(() {
-                                                        showSnackbar(
-                                                          "Successfully Removed",
-                                                          error: false,
-                                                        );
-                                                      });
-                                                    } catch (err) {
-                                                      showSnackbar(
-                                                          err.toString());
-                                                    }
-                                                    Navigator.of(ctx).pop();
-                                                  },
-                                                  child: const Text("Yes"),
-                                                ),
-                                                TextButton(
-                                                  onPressed: () =>
-                                                      Navigator.of(ctx).pop(),
-                                                  child: const Text("No"),
-                                                ),
-                                              ],
-                                            ),
-                                          );
-                                        },
-                                        child: Padding(
-                                          padding: EdgeInsets.all(5),
-                                          child: Image.asset(
-                                            "lib/assets/images/bin.png",
-                                          ),
-                                        ),
-                                      ),
                                       ...exercise["steps"].map(
                                         (step) => IconButton(
                                             onPressed: () {},
@@ -314,6 +266,8 @@ class _ExercisePageState extends State<ExercisePage> {
                     showSnackbar(
                         "Failed to add the new move: ${values['name']}");
                   }
+
+                  Navigator.of(context).pop();
                 }
 
                 return AlertDialog(

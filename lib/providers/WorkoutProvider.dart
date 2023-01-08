@@ -266,7 +266,7 @@ class WorkoutProvider extends ChangeNotifier {
       //   _items = [workoutData];
       // }
 
-      notifyListeners();
+      await fetchWorkouts();
     } catch (error) {
       rethrow;
     }
@@ -328,36 +328,7 @@ class WorkoutProvider extends ChangeNotifier {
         throw HttpException(responseData["message"]);
       }
 
-      // _items!.forEach((item) {
-      //   if (item["workoutId"] == id) {
-      //     _items!.remove(item);
-      //   }
-      // });
-
-      notifyListeners();
-    } catch (error) {
-      rethrow;
-    }
-  }
-
-  Future<void> removeMove(String id) async {
-    var url =
-        "https://684ezlnsfa.execute-api.eu-central-1.amazonaws.com/Prod/move/remove/${id}";
-
-    try {
-      final response = await http.get(
-        Uri.parse(url),
-        headers: {
-          "Authorization": _token!,
-        },
-      );
-
-      final responseData = json.decode(response.body);
-      if (response.statusCode >= 400) {
-        throw HttpException(responseData["message"]);
-      }
-
-      notifyListeners();
+      await fetchWorkouts();
     } catch (error) {
       rethrow;
     }
@@ -368,8 +339,6 @@ class WorkoutProvider extends ChangeNotifier {
       "name": name,
       "steps": steps,
     };
-
-    print(body);
 
     var url =
         "https://684ezlnsfa.execute-api.eu-central-1.amazonaws.com/Prod/move/create";
@@ -388,7 +357,7 @@ class WorkoutProvider extends ChangeNotifier {
         throw HttpException(responseData["message"]);
       }
 
-      notifyListeners();
+      fetchMovesFull();
     } catch (error) {
       rethrow;
     }

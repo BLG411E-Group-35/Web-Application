@@ -28,7 +28,7 @@ class _UserState extends State<User> {
         Map<String, dynamic> userData = {};
 
         final GlobalKey<FormState> formKey = GlobalKey();
-        bool isLoading = false;
+        bool popupIsLoading = false;
 
         userData = {
           "name": oldData != null ? oldData["fullname"].split(' ')[0] : "",
@@ -51,7 +51,7 @@ class _UserState extends State<User> {
                 formKey.currentState!.save();
 
                 setState(() {
-                  isLoading = true;
+                  popupIsLoading = true;
                 });
 
                 try {
@@ -80,7 +80,7 @@ class _UserState extends State<User> {
                   showSnackbar(error.toString());
                 }
                 setState(() {
-                  isLoading = false;
+                  popupIsLoading = false;
                 });
               }
 
@@ -181,7 +181,7 @@ class _UserState extends State<User> {
                         const SizedBox(
                           height: 20,
                         ),
-                        isLoading
+                        popupIsLoading
                             ? const CircularProgressIndicator()
                             : ElevatedButton(
                                 onPressed: submit,
@@ -348,7 +348,7 @@ class _UserState extends State<User> {
                                               context: context,
                                               builder: (ctx) => AlertDialog(
                                                 title: Text(
-                                                    "Remove ${e["workoutName"]}"),
+                                                    "Remove ${e["userId"]}"),
                                                 content: const Text(
                                                     "Are you sure you want to delete this workout?"),
                                                 actions: [

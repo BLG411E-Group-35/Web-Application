@@ -61,7 +61,7 @@ class UserProvider extends ChangeNotifier {
         throw HttpException(responseData["message"]);
       }
 
-      notifyListeners();
+      await fetchUsers();
     } catch (error) {
       rethrow;
     }
@@ -91,7 +91,7 @@ class UserProvider extends ChangeNotifier {
         throw HttpException(responseData["message"]);
       }
 
-      notifyListeners();
+      await fetchUsers();
     } catch (error) {
       rethrow;
     }
@@ -114,7 +114,7 @@ class UserProvider extends ChangeNotifier {
         throw HttpException(responseData["message"]);
       }
 
-      notifyListeners();
+      await fetchUsers();
     } catch (error) {
       rethrow;
     }

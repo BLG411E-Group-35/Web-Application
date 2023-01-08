@@ -112,12 +112,7 @@ class _ProgramsState extends State<Programs> {
                           // Invalid!
                           return;
                         }
-
-                        // print("I have passed the validator");
-
                         formKey.currentState!.save();
-
-                        // print("I have passed the save");
 
                         workoutData["moveCount"] = 0;
                         workoutData["moves"] = [];
@@ -305,9 +300,11 @@ class _ProgramsState extends State<Programs> {
                                                   return null;
                                                 },
                                                 onSaved: (value) {
-                                                  moveSets[e] = value == null
-                                                      ? 0
-                                                      : int.parse(value);
+                                                  moveSets[e] =
+                                                      (value == null ||
+                                                              value.isEmpty)
+                                                          ? 0
+                                                          : int.parse(value);
                                                 },
                                               ),
                                             ),
@@ -346,9 +343,11 @@ class _ProgramsState extends State<Programs> {
                                                   return null;
                                                 },
                                                 onSaved: (value) {
-                                                  moveReps[e] = value == null
-                                                      ? 0
-                                                      : int.parse(value);
+                                                  moveReps[e] =
+                                                      (value == null ||
+                                                              value.isEmpty)
+                                                          ? 0
+                                                          : int.parse(value);
                                                 },
                                               ),
                                             ),

@@ -12,7 +12,7 @@ D:/GROUP35/Web-Application/build/windows/runner/Debug/data/flutter_assets/lib/as
 D:/GROUP35/Web-Application/build/windows/runner/Debug/data/flutter_assets/lib/assets/images/image4.png
 D:/GROUP35/Web-Application/build/windows/runner/Debug/data/flutter_assets/lib/assets/images/pen.png
 D:/GROUP35/Web-Application/build/windows/runner/Debug/data/flutter_assets/lib/assets/images/title.png
-D:/GROUP35/Web-Application/build/windows/runner/Debug/data/flutter_assets/lib/assets/posenet_mobilenet_v1_100_257x257_multi_kpt_stripped.tflite
+D:/GROUP35/Web-Application/build/windows/runner/Debug/data/flutter_assets/lib/assets/lite-model_movenet_singlepose_thunder_tflite_float16_4.tflite
 D:/GROUP35/Web-Application/build/windows/runner/Debug/data/flutter_assets/NOTICES
 D:/GROUP35/Web-Application/build/windows/runner/Debug/data/flutter_assets/NOTICES.Z
 D:/GROUP35/Web-Application/build/windows/runner/Debug/data/flutter_assets/packages/cupertino_icons/assets/CupertinoIcons.ttf
