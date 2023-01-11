@@ -8,7 +8,6 @@ import 'package:web_app/screens/programScreen.dart';
 import 'package:web_app/screens/userScreen.dart';
 import 'package:web_app/screens/homeScreen.dart';
 import 'package:web_app/themes/customTheme.dart';
-import 'package:web_app/widgets/appBar.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -42,6 +41,7 @@ class MyApp extends StatelessWidget {
       ],
       child: Consumer<AuthProvider>(
         builder: (ctx, auth, _) => MaterialApp(
+          debugShowCheckedModeBanner: false,
           title: 'Explore',
           theme: ThemeData(
             primaryColor: CustomTheme.Color2,

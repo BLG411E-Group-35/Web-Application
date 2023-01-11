@@ -67,16 +67,18 @@ class _ExercisePageState extends State<ExercisePage> {
       setState(() {
         _isLoading = true;
       });
-      Provider.of<WorkoutProvider>(context).fetchMovesFull().then((_) {
-        setState(() {
-          _isLoading = false;
-        });
-      }).catchError(
+      Provider.of<WorkoutProvider>(context)
+          .fetchMovesFull()
+          .then((_) {})
+          .catchError(
         (error) {
           print(error);
         },
       );
 
+      setState(() {
+        _isLoading = false;
+      });
       _isInit = true;
     }
     super.didChangeDependencies();
@@ -271,149 +273,159 @@ class _ExercisePageState extends State<ExercisePage> {
                 }
 
                 return AlertDialog(
-                  title: const Text("Add new move"),
-                  content: StatefulBuilder(
+                    title: const Text("Add new move"),
+                    content: StatefulBuilder(
                       builder: ((context, setState) => Form(
-                          key: formKey,
-                          child: SingleChildScrollView(
-                              child: Column(
+                            key: formKey,
+                            child: SingleChildScrollView(
+                              child: Padding(
+                                padding: EdgeInsets.all(15.0),
+                                child: Column(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                TextFormField(
-                                  enabled: images.isEmpty,
-                                  decoration: const InputDecoration(
-                                    labelText: 'Move Name',
-                                    floatingLabelBehavior:
-                                        FloatingLabelBehavior.never,
-                                  ),
-                                  validator: (String? value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Invalid name!';
-                                    }
-                                    return null;
-                                  },
-                                  onSaved: (value) {
-                                    values["name"] = value ?? "";
-                                  },
-                                ),
-                                TextFormField(
-                                  enabled: images.isEmpty,
-                                  decoration: const InputDecoration(
-                                    labelText: 'Steps',
-                                    floatingLabelBehavior:
-                                        FloatingLabelBehavior.never,
-                                  ),
-                                  inputFormatters: [
-                                    FilteringTextInputFormatter.digitsOnly
-                                  ],
-                                  validator: (String? value) {
-                                    if (value == null ||
-                                        value.isEmpty ||
-                                        int.parse(value) <= 0) {
-                                      return 'Invalid steps!';
-                                    }
-                                    return null;
-                                  },
-                                  onSaved: (value) {
-                                    values["num_steps"] = int.tryParse(value!);
-                                  },
-                                ),
-                                const SizedBox(
-                                  height: 20,
-                                ),
-                                ...images.map(
-                                  (img) => SizedBox(
-                                    width: 300,
-                                    child: SizedBox(
-                                      width: 100,
-                                      child: ExpansionTile(
-                                        textColor: Colors.black54,
-                                        collapsedTextColor: Colors.black54,
-                                        title: Text(img.name),
-                                        subtitle: Text(joints[
-                                            labelIdx[images.indexOf(img)]]),
-                                        childrenPadding: EdgeInsets.all(10.0),
-                                        children: [
-                                          SizedBox(
-                                            width: WIDTH_RESIZE,
-                                            height: HEIGHT_RESIZE,
-                                            child: Stack(
-                                              children: [
-                                                SizedBox(
+                                    TextFormField(
+                                      enabled: images.isEmpty,
+                                      decoration: const InputDecoration(
+                                        labelText: 'Move Name',
+                                        floatingLabelBehavior:
+                                            FloatingLabelBehavior.never,
+                                      ),
+                                      validator: (String? value) {
+                                        if (value == null || value.isEmpty) {
+                                          return 'Invalid name!';
+                                        }
+                                        return null;
+                                      },
+                                      onSaved: (value) {
+                                        values["name"] = value ?? "";
+                                      },
+                                    ),
+                                    TextFormField(
+                                      enabled: images.isEmpty,
+                                      decoration: const InputDecoration(
+                                        labelText: 'Steps',
+                                        floatingLabelBehavior:
+                                            FloatingLabelBehavior.never,
+                                      ),
+                                      inputFormatters: [
+                                        FilteringTextInputFormatter.digitsOnly
+                                      ],
+                                      validator: (String? value) {
+                                        if (value == null ||
+                                            value.isEmpty ||
+                                            int.parse(value) <= 0) {
+                                          return 'Invalid steps!';
+                                        }
+                                        return null;
+                                      },
+                                      onSaved: (value) {
+                                        values["num_steps"] =
+                                            int.tryParse(value!);
+                                      },
+                                    ),
+                                    const SizedBox(
+                                      height: 20,
+                                    ),
+                                    ...images.map(
+                                      (img) => SizedBox(
+                                        width: WIDTH_RESIZE,
+                                        child: ExpansionTile(
+                                          textColor: Colors.black54,
+                                          collapsedTextColor: Colors.black54,
+                                          title: Text(img.name),
+                                          subtitle: Text(joints[
+                                              labelIdx[images.indexOf(img)]]),
+                                          children: [
+                                            SizedBox(
+                                              width: WIDTH_RESIZE,
+                                              height: HEIGHT_RESIZE,
+                                              child: Stack(
+                                                children: [
+                                                  SizedBox(
+                                                      height: HEIGHT_RESIZE,
+                                                      width: WIDTH_RESIZE,
+                                                      child: Image.memory(
+                                                        imagesAsBytes[images
+                                                            .indexOf(img)],
+                                                        fit: BoxFit.fill,
+                                                      )),
+                                                  SizedBox(
                                                     height: HEIGHT_RESIZE,
                                                     width: WIDTH_RESIZE,
-                                                    child: Image.memory(
-                                                      imagesAsBytes[
-                                                          images.indexOf(img)],
-                                                      fit: BoxFit.fill,
-                                                    )),
-                                                SizedBox(
-                                                  height: HEIGHT_RESIZE,
-                                                  width: WIDTH_RESIZE,
-                                                  child: Listener(
-                                                    onPointerDown: (event) {
-                                                      int idx =
-                                                          images.indexOf(img);
-                                                      String key =
-                                                          joints[labelIdx[idx]];
-                                                      if (event.buttons == 1) {
-                                                        Offset pos =
-                                                            event.localPosition;
+                                                    child: Listener(
+                                                      onPointerDown: (event) {
+                                                        int idx =
+                                                            images.indexOf(img);
+                                                        String key = joints[
+                                                            labelIdx[idx]];
+                                                        if (event.buttons ==
+                                                            1) {
+                                                          Offset pos = event
+                                                              .localPosition;
 
-                                                        steps[idx][
-                                                                "joint_coordinates"]
-                                                            ["x_$key"] = pos
-                                                                .dx /
-                                                            WIDTH_RESIZE;
-                                                        steps[idx][
-                                                                "joint_coordinates"]
-                                                            ["y_$key"] = pos
-                                                                .dy /
-                                                            HEIGHT_RESIZE;
+                                                          print(pos);
+                                                          steps[idx][
+                                                                  "joint_coordinates"]
+                                                              ["x_$key"] = pos
+                                                                  .dx /
+                                                              WIDTH_RESIZE;
+                                                          steps[idx][
+                                                                  "joint_coordinates"]
+                                                              ["y_$key"] = pos
+                                                                  .dy /
+                                                              HEIGHT_RESIZE;
 
-                                                        if (labelIdx[idx] <
-                                                            joints.length - 1) {
-                                                          setState((() {
-                                                            labelIdx[idx] += 1;
-                                                          }));
+                                                          if (labelIdx[idx] <
+                                                              joints.length -
+                                                                  1) {
+                                                            setState((() {
+                                                              labelIdx[idx] +=
+                                                                  1;
+                                                            }));
+                                                          }
+                                                        } else if (event
+                                                                .buttons ==
+                                                            2) {
+                                                          if (labelIdx[idx] <
+                                                              joints.length -
+                                                                  1) {
+                                                            setState((() {
+                                                              labelIdx[idx] +=
+                                                                  1;
+                                                            }));
+                                                          }
                                                         }
-                                                      } else if (event
-                                                              .buttons ==
-                                                          2) {
-                                                        if (labelIdx[idx] <
-                                                            joints.length - 1) {
-                                                          setState((() {
-                                                            labelIdx[idx] += 1;
-                                                          }));
-                                                        }
-                                                      }
-                                                    },
-                                                    child: Scribble(
-                                                      notifier: notifiers[
-                                                          images.indexOf(img)],
+                                                      },
+                                                      child: Scribble(
+                                                        notifier: notifiers[
+                                                            images
+                                                                .indexOf(img)],
+                                                      ),
                                                     ),
                                                   ),
-                                                ),
-                                              ],
+                                                ],
+                                              ),
                                             ),
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
                                     ),
-                                  ),
+                                    ElevatedButton(
+                                      onPressed: images.isEmpty
+                                          ? () async {
+                                              await getSteps();
+                                              setState(() {});
+                                            }
+                                          : addMove,
+                                      child: Text(
+                                          images.isEmpty ? "Upload" : "Add"),
+                                    )
+                                  ],
                                 ),
-                                ElevatedButton(
-                                  onPressed: images.isEmpty
-                                      ? () async {
-                                          await getSteps();
-                                          setState(() {});
-                                        }
-                                      : addMove,
-                                  child:
-                                      Text(images.isEmpty ? "Upload" : "Add"),
-                                )
-                              ]))))),
-                );
+                              ),
+                            ),
+                          )),
+                    ));
               });
         },
         child: const Icon(Icons.add),

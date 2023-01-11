@@ -17,6 +17,43 @@ class UserProvider extends ChangeNotifier {
   UnmodifiableListView<dynamic> get items =>
       UnmodifiableListView(_items == null ? [] : _items!);
 
+  Future<Map<String, int>> fetchStatistics() async {
+    const url =
+        "https://684ezlnsfa.execute-api.eu-central-1.amazonaws.com/Prod/history";
+
+    try {
+      final response = await http.get(
+        Uri.parse(url),
+        headers: {
+          "Authorization": _token!,
+        },
+      );
+
+      final responseData = json.decode(response.body);
+      if (response.statusCode >= 400) {
+        throw HttpException(responseData["message"]);
+      }
+
+      List data = responseData["data"];
+      int loginCount = 0;
+      int finishCount = 0;
+
+      data.forEach(
+        (element) {
+          if (element["logType"] == "login") {
+            loginCount += element["count"] as int;
+          } else if (element["logType"] == "workoutFinish") {
+            finishCount += element["count"] as int;
+          }
+        },
+      );
+
+      return {"login": loginCount, "workout": finishCount};
+    } catch (error) {
+      rethrow;
+    }
+  }
+
   Future<void> fetchUsers() async {
     const url =
         "https://684ezlnsfa.execute-api.eu-central-1.amazonaws.com/Prod/user";
