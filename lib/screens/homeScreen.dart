@@ -93,7 +93,7 @@ class _HomePageState extends State<HomePage> {
                                       child: _isLoading
                                           ? const CircularProgressIndicator()
                                           : Text(
-                                              "${statistics['login']}\nUsers Logged In",
+                                              "${statistics['login']}\nUser Login Processes",
                                               textAlign: TextAlign.center,
                                               style: TextStyle(
                                                   color: Colors.black,
